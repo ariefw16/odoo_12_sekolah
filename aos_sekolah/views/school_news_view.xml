@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="edit_school_news_form" model="ir.ui.view">
+        <field name="name">school.news.form</field>
+        <field name="model">school.news</field>
+        <field name="arch" type="xml">
+            <form string="News">
+                <header>
+                    <button string="Send Mail" class="btn btn-sm btn-default fa fa-envelope" type="object" name="news_update" colspan="2" />
+                </header>
+                <sheet>
+                    <group col="4" colspan="4">
+                        <field name="subject" />
+                        <field name="date" />
+                        <notebook colspan="4">
+                            <page string="Description">
+                                <field name="description" nolabel="1" colspan="4" />
+                            </page>
+                            <page string="Users">
+                                <field name="user_ids" nolabel="1" colspan="4" />
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_school_news_tree" model="ir.ui.view">
+        <field name="name">school.news.tree</field>
+        <field name="model">school.news</field>
+        <field name="arch" type="xml">
+            <tree string="Pengumuman">
+                <field name="subject" />
+                <field name="date" />
+            </tree>
+        </field>
+    </record>
+    <record id="view_hr_school_news_search" model="ir.ui.view">
+        <field name="name">school.news.search</field>
+        <field name="model">school.news</field>
+        <field name="arch" type="xml">
+            <search string="Pengumuman">
+                <field name="subject" />
+                <field name="date" />
+            </search>
+        </field>
+    </record>
+    <record id="view_school_news" model="ir.actions.act_window">
+        <field name="name">Buat Pengumuman</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">school.news</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem id="submenu_sub_school_news" name="Buat Pengumuman" parent="menu_news_form" action="view_school_news" sequence="40"/>
+        
+</odoo>

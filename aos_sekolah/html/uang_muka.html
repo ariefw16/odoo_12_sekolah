@@ -1,0 +1,72 @@
+<html>
+<head>
+    <style type="text/css">
+${css}
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 12px;
+}
+.list_table1 {
+	width:85%;
+	font-size:12px;
+}
+.list_table2 {
+	width:100%;
+	border: 1px solid black;
+    border-collapse: collapse;
+    font-weight: bold:
+}
+.th_border {
+	border: 1px solid black;
+}
+
+.inv_line_bottom td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	border-top:0px;
+	border-bottom:0px;
+	padding: 2px 5px 2px 5px;	
+}
+    </style>
+</head>
+<body>
+<% set bulan = {'Jan':'Januari','Feb':'Februari','Mar':'Maret','Apr':'April','May':'Mei','Jun':'Juni','Jul': 'Juli','Agt': 'Agustus','Sep': 'September','Oct': 'Oktober','Nov': 'November','Dec': 'Desember'} %>
+<table class="list_table2" cellpadding="5" cellspacing="5">
+  <tr>
+    <td colspan="3" class="th_border" style="font-size:16px"><b>FOCUS EDUKASI INTERNATIONAL</b></td>
+  </tr>
+  <tr>
+    <td colspan="3" class="th_border" align="center">LAPORAN KAS HARIAN</td>
+  </tr>
+  <tr>
+    <td colspan="3" class="th_border">TANGGAL : ${time.strftime('%d-%m-%Y', time.strptime(data['form'][0]['from_date'],'%Y-%m-%d'))} - ${time.strftime('%d-%m-%Y', time.strptime(data['form'][0]['to_date'],'%Y-%m-%d'))}</td>
+  </tr>
+  %for j in get_journal(data):
+  <tr>
+    <td colspan="2" class="th_border" style="font-size:14px">${j.name.upper() or ''}</td>
+    <td class="th_border">&nbsp;</td>
+  </tr>
+	  <% set i=1 %>
+	  %for a in get_advance(data, j):
+	  <tr>
+	    <td class="th_border" width="5%">${i}</td>
+	    <td class="th_border">
+	    %if a.partner_id.year_id:
+	    	${a.number +' '+ a.partner_id.year_id.name +' '+ a.partner_id.name or ''}
+	    %else:
+	    	${a.number +' '+ a.partner_id.name or ''}
+	    %endif
+	    </td>
+	    <td class="th_border" align="right">${ formatLang(a.amount) or 0 }</td>
+	  </tr>
+	  <% set i = i + 1 %>
+	  %endfor
+  <tr>
+    <td colspan="2" class="th_border"><b>SUBTOTAL ${j.name.upper() or ''}</b></td>
+    <td class="th_border" align="right">${ formatLang(get_subtotal(get_advance(data, j))) }</td>
+  </tr>
+  %endfor
+</table>    
+</body>
+</html>
+

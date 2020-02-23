@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+	<record id="view_partner_student_update_form" model="ir.ui.view">
+        <field name="name">res.partner.student.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Update Students">
+            	<header>
+                    <button class="oe_highlight oe_stat_button" name="set_confirm" type="object" string="Confirm" states="draft,cancel"/>
+                    <button class="oe_highlight oe_stat_button" name="set_active" type="object" string="Active" states="confirm,terminate,alumni,update"/>
+                    <button class="oe_stat_button" name="set_to_draft" type="object" string="Not Active" states="confirm,active" />
+                    <button class="oe_stat_button" name="set_alumni" string="Set Graduate" type="object" states="active" />
+                    <button class="oe_stat_button" name="set_terminate" string="Set as Terminate" type="object" states="active"/>
+                    <!-- <button class="oe_stat_button" name="set_to_update" type="object" string="Update Data" states="active" /> -->
+                    <button class="oe_stat_button" name="set_to_cancel" type="object" string="Reject" states="draft,confirm" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,active,alumni,terminate,cancel"/>
+                </header>
+            	<sheet>
+            		<div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "archive"}'/>
+                        </button>
+	                    <button type="object"
+	                        class="oe_stat_button"
+	                        id="invoice_button"
+	                        icon="fa-pencil-square-o"
+	                        name="open_partner_history"
+	                        groups="aos_sekolah.group_school_invoice"
+	                        context="{'default_partner_id': active_id}">
+	                        <div class="o_form_field o_stat_info">
+	                            <span class="o_stat_value"><field name="total_invoiced" widget='monetary' options="{'currency_field': 'currency_id'}"/></span>
+	                            <span class="o_stat_text">Invoices</span>
+	                        </div>
+	                    </button>
+                    </div>
+	            	<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [150, 150]}'/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name" attrs="{'invisible': [('parent_id','=',None)], 'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('parent_id','!=',None),('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+                        </h1>
+                        <div class="o_row">                        	
+                        	<field name="nis" class="oe_inline" placeholder="Nomor Induk Siswa" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+                        </div>
+                    </div>                   
+                	<group>			                		
+	                    <group name="personal_detail">
+	                    	<field name="parent_id" options="{'no_create': true}" attrs="{'invisible': [('parent_id','=',False)], 'readonly': [('state','not in',('active','update','terminate','alumni'))]}" string="Related Student"/>
+	                    	<field name="reg_code" class="oe_inline" placeholder="Registration Number" attrs="{'readonly': [('state','not in',('draft','cancel'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                        <field name="type_student" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>	   
+	                    	<field name="year_id" options="{'no_create': true, 'no_open': True}" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                    	<label for="grade_id"/>
+							<div>
+                					<field name="level_id" options="{'no_create': true, 'no_open': True}" placeholder="Level" style="width: 25%%" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/> / 
+								<field name="grade_id" options="{'no_create': true, 'no_open': True}" domain="[('level_id','=',level_id)]" placeholder="Grade" style="width: 25%%" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/> / 
+	                            <field name="grade_line_id" options="{'no_create': true, 'no_open': True}" domain="[('grade_id','=',grade_id)]" style="width: 20%%" placeholder="Classroom" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                    		<button name="%(action_grade_next_student)d" attrs="{'invisible': [('state','!=','active')]}" string="Next Grade" type="action" class="oe_inline fa fa-arrow-right oe_link"/>
+	                        </div>            	
+	                        <field name="gender" string="Gender" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                        <label for="place_of_birth" class="oe_edit_only" string="Place and Date of Birth"/>
+	                        <div>
+	                            <field name="place_of_birth" placeholder="Place of Birth" style="width: 50%%" class="oe_inline" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>,
+	                            <field name="date_of_birth" placeholder="Date of Birth" style="width: 27%%" class="oe_inline" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                        </div>
+	                        <field name="religion"/>
+	                        <field name="blood_group" placeholder="A, B, AB, O" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                        <field name="age"/>
+	                    </group>
+	                    <group name="personal_contact">			   
+	                    	<field name="is_student" invisible="1" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                    	<field name="admission_date" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+	                    	<field name="date_start" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('confirm','update')),('is_student','=',True)]}"/>
+                        	<field name="email" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                        <field name="phone" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                        <field name="mobile" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>   
+	                        <field name="category_id" widget="many2many_tags" placeholder="Tags..." options="{'no_create_edit': True}" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                        <field name="is_current" invisible="1" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>	 
+	                    	<field name="customer" invisible="1"/>	   
+	                    	<field name="supplier" invisible="1"/>
+	                    </group>
+            		</group>
+	                <notebook colspan="4">
+		                <page name="personal_information" string="Address Info">
+                			<group>
+			                    <group name="address">
+			                    	<field name="type" attrs="{'invisible': [('parent_id','=', False)]}" groups="base.group_no_one"/>
+			                        <label for="street" string="Address" />
+			                        <div name="div_address">
+			                            <field name="street" placeholder="Street..." options="{'no_create': true}" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}"/>
+			                            <field name="street2" placeholder="Street2..." options="{'no_create': true}" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+			                            <div class="address_format">
+			                                <field name="city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+			                                <field name="state_id" class="oe_no_button" placeholder="Provice" style="width: 37%%" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+			                                <field name="zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+			                            </div>
+			                            <field name="country_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}'  attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+			                        </div>
+			                     </group>	
+	                             <group>
+	                             	<field name="emergency_contact" options='{"always_reload": True, "no_create": True}' attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                             	<field name="emergency_phone" options='{"always_reload": True, "no_create": True}' attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                             	<field name="contact_info" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))]}"/>
+	                             </group>	                    
+		                	 </group>
+		                	 <group name="student_invoice" string="Student Invoice" colspan="4" col="4">	  
+			                	 <field name="fee_line" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('draft','update','confirm'))]}">
+				                    <tree string="Student Invoice" editable="bottom" decoration-info="state in ('draft','to_invoice','to_billing')">
+						                <field name="fee_line_id" options='{"no_open": True, "no_create": True}'/>
+						                <field name="product_id" invisible="1"/>
+						                <field name="name" invisible="1"/>
+						                <field name="quantity" invisible="1"/>
+						                <field name="qty_invoiced"/>
+						                <field name="qty_to_invoice" invisible="0"/>
+						                <field name="amount"/>
+						                <field name="discount"/>
+						                <field name="amount_subtotal"/>
+						                <!-- <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+	                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/> -->
+						                <field name="type"/>
+						                <field name="date_start" invisible="1"/>
+						                <field name="date_next" attrs="{'required': [('type','!=','advance')]}"/>
+					                	<field name="stop" readonly="1"/>
+						                <field name="state"/>
+						            </tree>
+						            <form string="Student Invoice">
+						            	<header>	
+						                	<button name="action_invoice" string="Create Invoice" type="object"/>
+						                	<button name="action_stop_invoice" string="Stop Invoice" type="object"/>				            		
+						                	<field name="state" widget="statusbar"/>
+						            	</header>
+						            	<group col="4" colspan="4">
+							                <field name="fee_line_id" options='{"no_open": True, "no_create": True}'/>
+							                <field name="product_id" options='{"no_open": True, "no_create": True}'/>
+							                <field name="name"/>
+							                <field name="quantity"/>
+							                <field name="amount"/>
+							                <field name="discount"/>
+							                <field name="amount_subtotal"/>
+							                <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+		                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+							                <field name="type"/>
+						                	<field name="date_start" invisible="1"/>
+						                	<field name="date_next"/>
+						                	<field name="stop" readonly="1"/>
+						                </group>
+						                <div>
+	                                        <label for="invoice_lines"/>
+	                                        <field name="invoice_lines"/>
+	                                    </div>
+						            </form>
+				                </field>              	                  
+		                	 </group>
+		                </page>
+		                <page string="Graduation History">
+                            <field name="graduate_lines">
+                            	<tree string="Graduate History" create="false">
+                            		<field name="sequence"/>
+                            		<field name="name"/>
+                            		<field name="graduate_date"/>
+                            		<field name="year_id"/>
+                            		<field name="grade_id"/>
+                            		<field name="grade_line_id"/>
+                            		<field name="class_rank"/>
+                            		<field name="average_score"/>
+                            	</tree>                           
+                                <form string="Graduate History">
+                                    <sheet>
+                                        <group>			                		
+						                    <group name="personal_detail">
+						                    	<field name="name" class="oe_inline"/>
+						                        <field name="graduate_date"/>
+			                            		<field name="class_rank"/>
+			                            		<field name="average_score"/>
+						                    </group>
+						                    <group name="personal_grade">
+			                            		<field name="year_id"/>
+			                            		<field name="grade_id"/>
+			                            		<field name="grade_line_id"/>
+						                    </group>
+					            		</group>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_average_score" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+		                <page name="school_information" string="School Information">
+                            <field name="school_lines" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True),('type_student','=','move')]}">
+                                <tree string="Previous School" editable="bottom">
+                                    <field name="name" />
+                                    <field name="registration_no" />
+                                    <field name="admission_date" />
+                                    <field name="exit_date" />
+                                    <field name="grade_id" />
+                                </tree>
+                                <form string="Previous School">
+                                    <separator string="Previous School" />
+                                    <group col="4" colspan="4">
+                                        <field name="name" placeholder="Name School" />
+                                        <field name="registration_no" placeholder="NIS" />
+                                        <field name="admission_date" />
+                                        <field name="exit_date" />
+                                        <field name="grade_id" placeholder="Kelas"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page name="family_information" string="Family Contacts">                        	
+		                	 <group>
+	                             <field name="family_lines" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('active','update','terminate','alumni'))],'required': [('state','in',('active','update','terminate','alumni')),('is_student','=',True)]}">
+	                                <tree string="Family Information" editable="bottom">
+	                                    <field name="name" string="Name" />
+	                                    <field name="relation" />
+	                                    <field name="phone" />
+	                                    <field name="email" />
+	                                </tree>
+	                                <form string="Family Information">
+	                                    <group col="4">
+	                                        <group col="2">
+	                                            <separator colspan="2" />
+	                                            <field name="name" placeholder="Name"/>
+	                                            <field name="relation" placeholder="Relation" />
+	                                        </group>
+	                                        <group col="2">
+	                                            <separator colspan="2" />
+	                                            <field name="phone" placeholder="Phone Number" />
+	                                            <field name="email" placeholder="Email Address" />
+	                                        </group>
+	                                    </group>
+	                                </form>
+	                            </field>
+                            </group>
+                        </page>
+                        <page name="notes_information" string="Notes">
+                            <form string="Catatan">
+                                <field name="comment" nolabel="1" colspan="4" />
+                            </form>
+                        </page>
+	                </notebook>
+	            </sheet>
+	            <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_students_update" model="ir.actions.act_window">
+        <field name="name">Update Students</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('state','in',('active','alumni','terminate')),('is_student','=',True)]</field>
+        <field name="context">{'is_student': 1, 'is_current': 1, 'default_customer': 0, 'default_supplier': 0, 'search_default_state_active': 1}</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_partner_student_filter"/>
+        <field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+			  Click to add a contact student in your address book.
+			</p><p>
+			  Odoo helps you easily track all activities related to
+			  a student: discussions, history of business opportunities,
+			  documents, etc.
+			</p>
+        </field>
+    </record>
+    <record id="action_student_update_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="res_partner_kanban_student_view"/>
+        <field name="act_window_id" ref="action_students_update"/>
+    </record>
+    <record id="action_student_update_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_partner_student_tree"/>
+        <field name="act_window_id" ref="action_students_update"/>
+    </record>
+    <record id="action_student_update_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_student_update_form"/>
+        <field name="act_window_id" ref="action_students_update"/>
+    </record>
+
+    <menuitem name="Update Students"
+        id="menu_update_students"
+        sequence="20"
+        groups="aos_sekolah.group_school_update_student"
+        action="action_students_update"
+        parent="menu_students"/>
+</odoo>

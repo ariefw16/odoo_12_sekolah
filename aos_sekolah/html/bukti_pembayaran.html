@@ -1,0 +1,100 @@
+<html>
+<head>    
+<style>
+${css}
+#watermark {
+  font-size: 120pt;
+  color: #d0d0d0;
+  -webkit-transform: rotate(-45deg);
+  position: fixed;
+  width: 450px;
+  height: 450px;
+  margin: 0;
+  z-index: -1;
+  left:250px;
+  top:75px;
+	}
+</style>
+</head>
+<body>
+    %for inv in objects :
+    <hr size="1px" color="black" style="border-top: dotted 1px;">
+    <table width="100%" class="list_table0">
+    <tr>
+    	<td width="50%" style="text-align:left"><span style="font-size:16px"><b><i>${company.name or ''}</i></b></span><br/>
+    	<span style="font-size:11px">
+		    <i>${company.partner_id and company.partner_id.street or  '' } 
+		    ${company.partner_id and company.partner_id.zip or '' }
+		    ${company.partner_id and company.partner_id.city or '' }
+		    ${company.partner_id and company.partner_id.country_id and company.partner_id.country_id.name  or ''}
+		    </i></span>
+		</td>
+		<td width="50%" style="text-align:right">
+	    	<span style="font-size:16px"><b>${inv.voucher_type == 'sale' and 'BUKTI PEMBAYARAN' or inv.voucher_type == 'purchase' and 'BUKTI PEMBAYARAN' or ''}</b></span>
+	    </td>
+    </tr>
+    </table>
+    <hr size="1px" color="black">
+    <table class="font11px" width="100%">
+    <tr valign="top">
+    	<td width="15%"><span color="white"></span>Diterima dari</td>
+    	<td width="34%">${inv.partner_id and inv.partner_id.name or ''}</td>
+    	<td width="15%">Tgl. Bayar</td>
+    	<td width="34%">${formatLang(inv.date, date=True)}</td>
+    </tr>
+    <tr valign="top">
+    	<td width="15%">Kelas</td>
+    	<td width="34%">${inv.partner_id.grade_line_id and inv.partner_id.grade_line_id.name or ''}</td>
+    	<td width="15%">Nomor Bukti</td>
+    	<td width="34%">${inv.number or ''}</td>
+    </tr>
+    <tr valign="top">
+    	<td width="15%">Nomor Induk</td>
+    	<td width="34%">${inv.partner_id.nis or inv.partner_id.reg_code or '-'}</td>
+    	<td width="15%">Metode</td>
+    	<td width="34%">${inv.payment_type == 'cash' and 'TUNAI' or 'TRANSFER'}</td>
+    </tr>
+    <tr valign="top">
+    	<td width="15%">Terbilang</td>
+    	<td width="34%"><i>${ inv.check_amount_in_words_id or '-' }</i></td>
+    	<td width="15%">Petugas</td>
+    	<td width="34%">${ inv.user_id and inv.user_id.name or 'ADMIN'}</td>
+    </tr>
+    </table>
+    <hr size="1px" color="black">
+    <table class="list_table"  width="100%">
+        <thead><tr><th colspan="4">Dengan rincian pembayaran sebagai berikut:</th></tr></thead>
+        <% set i = 1 %>
+        %for line in inv.line_ids:
+        <tbody>
+        <tr>
+	        <td width="80%" style="text-align:left;" colspan="3">${i}. ${line.name or ''}</td>
+	        <td width="20%" style="text-align:right;">${ formatLang(line.price_subtotal) or 0.0}</td>
+        </tr>
+    	<% set i = i + 1 %>
+        %endfor
+    </table>
+    <table width="100%">
+        <tr>
+        	<td style="text-align:center;border-top:1px solid black;">Penyetor</td>
+        	<td style="text-align:center;border-top:1px solid black;">Penerima</td>
+	        <td style="text-align:right;border-top:1px solid black;"/><b>Jumlah:</b></td>
+	        <td style="text-align:right;border-top:1px solid black;">${formatLang(inv.amount) or 0.0}</td>
+        </tr>
+        <tr>
+        	<td></td>
+        	<td></td>
+	        <td></td>
+	        <td></td>
+        </tr>
+        <tr>
+        	<td style="text-align:center;">(_________)</td>
+        	<td style="text-align:center;">(_________)</td>
+	        <td></td>
+	        <td></td>
+        </tr>
+        </tbody>
+    </table>
+    %endfor
+</body>
+</html>

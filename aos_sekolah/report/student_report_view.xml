@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <record id="view_student_report_pivot" model="ir.ui.view">
+         <field name="name">student.report.pivot</field>
+         <field name="model">student.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Student Analysis" disable_linking="True">
+                 <field name="year_id" type="row"/>
+                 <field name="grade_id" type="col"/>
+                 <field name="count_student" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="view_student_report_graph" model="ir.ui.view">
+         <field name="name">student.report.graph</field>
+         <field name="model">student.report</field>
+         <field name="arch" type="xml">
+             <graph string="Student Analysis">
+                 <field name="grade_id"/>
+                 <field name="count_student" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <!-- Custom reports (aka filters) -->
+    <!-- <record id="filter_invoice_salespersons" model="ir.filters">
+        <field name="name">By Salespersons</field>
+        <field name="model_id">account.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'user_id']}</field>
+    </record>
+    <record id="filter_invoice_product" model="ir.filters">
+        <field name="name">By Product</field>
+        <field name="model_id">account.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'product_id'], 'set_visible':True, 'residual_invisible':True}</field>
+    </record>
+    <record id="filter_invoice_product_category" model="ir.filters">
+        <field name="name">By Product Category</field>
+        <field name="model_id">account.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'categ_id'], 'residual_invisible':True}</field>
+    </record>
+    <record id="filter_invoice_refund" model="ir.filters">
+        <field name="name">By Refund</field>
+        <field name="model_id">account.invoice.report</field>
+        <field name="domain">[('type', '=', 'out_refund')]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'user_id']}</field>
+    </record>
+    <record id="filter_invoice_country" model="ir.filters">
+        <field name="name">By Country</field>
+        <field name="model_id">account.invoice.report</field>
+        <field name="domain">[]</field>
+        <field name="user_id" eval="False"/>
+        <field name="context">{'group_by': ['date:month', 'country_id']}</field>
+    </record> -->
+
+    <record id="view_student_report_search" model="ir.ui.view">
+        <field name="name">student.report.search</field>
+        <field name="model">student.report</field>
+        <field name="arch" type="xml">
+            <search string="Student Analysis">
+                <field name="date"/>
+                <filter string="New" domain="[('state','=','draft')]"/>
+                <filter string="Active" domain="[('state','=','active')]"/>
+                <filter string="Not Active" domain="[('state','=','cancel')]"/>
+                <separator/>
+                <filter string="Student" name="customer" domain="[('customer','=',True)]"/>
+                <filter string="Teacher" name="supplier" domain="[('supplier','=',True)]"/>
+                <separator/>
+                <field name="partner_id" string="Students"/>
+                <field name="level_id"/>
+                <field name="grade_id"/>
+                <field name="year_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="Year" name="group_year_id" context="{'group_by':'year_id'}"/>
+                    <filter string="Level" name="group_level_id" context="{'group_by':'level_id'}"/>
+                    <filter string="Grade" name="group_grade_id" context="{'group_by':'grade_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by':'state'}"/>
+                    <filter string="School" name="group_school" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_student_report_all" model="ir.actions.act_window">
+        <field name="name">Student Analysis</field>
+        <field name="res_model">student.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{'search_default_group_year_id':1, 'group_by':[]}</field>
+        <field name="search_view_id" ref="view_student_report_search"/>
+        <field name="help">From this report, you can have an overview of the total student from your admission register. The search tool can also be used to personalise your Admission reports, match this analysis to your needs.</field>
+    </record>
+    
+    <menuitem name="Student Analysis" action="action_student_report_all" id="menu_action_student_report_all" parent="menu_laporan_form" sequence="20"/>
+
+
+</data>
+</odoo>

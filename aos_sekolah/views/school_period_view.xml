@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- From View Of Academic Year's Information -->
+    <record id="view_school_year_form" model="ir.ui.view">
+        <field name="name">school.year.form</field>
+        <field name="model">school.year</field>
+        <field name="arch" type="xml">
+            <form string="School Year">
+                <header>
+                    <button class="oe_stat_button" name="generate_period" type="object" string="Generate Semester"/>
+                </header>
+                <sheet>             	
+                    <group col="4" colspan="4">
+                        <field name="name" placeholder="Name" />
+                        <field name="code" placeholder="Code" />
+                        <field name="date_start" placeholder="Start Date" />
+                        <field name="date_stop" placeholder="Stop Date" />
+                        <!-- <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/> -->
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Semester">
+                            <field name="month_ids" nolabel="1" colspan="4">
+                                <tree string="Months">
+                                    <field name="name" />
+                                    <field name="code" />
+                                    <field name="date_start" />
+                                    <field name="date_stop" />
+                                </tree>
+                                <form string="Months">
+                                    <group col="4" colspan="4">
+                                        <field name="name" placeholder="Name" />
+                                        <field name="code" placeholder="Code" />
+                                        <field name="date_start" placeholder="Start Date" />
+                                        <field name="date_stop" placeholder="Stop Date" />
+                                        <field name="description" colspan="4" />
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                    <newline />
+                    <separator string="Description" colspan="4" />
+                    <field name="description" colspan="4" />
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree View Of Academic Year's Information -->
+    <record id="view_school_year_tree" model="ir.ui.view">
+        <field name="name">school.year.tree</field>
+        <field name="model">school.year</field>
+        <field name="arch" type="xml">
+            <tree string="School Year">
+                <field name="name" />
+                <field name="code" />
+                <field name="date_start" />
+                <field name="date_stop" />
+            </tree>
+        </field>
+    </record>
+    <!-- From View Of Academic Month's Information -->
+    <record id="view_school_month_form" model="ir.ui.view">
+        <field name="name">school.month.form</field>
+        <field name="model">school.month</field>
+        <field name="arch" type="xml">
+            <form string="Semester">
+                <sheet>
+                    <group col="4" colspan="4">
+                        <field name="name" placeholder="Name" />
+                        <field name="code" placeholder="Code" />
+                        <field name="date_start" placeholder="Start Date" />
+                        <field name="date_stop" placeholder="Stop Date" />
+                        <field name="year_id" colspan="4" />
+                        <field name="description" colspan="4" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Tree View Of Academic Month's Information -->
+    <record id="view_school_month_tree" model="ir.ui.view">
+        <field name="name">school.month.tree</field>
+        <field name="model">school.month</field>
+        <field name="arch" type="xml">
+            <tree string="Semester" create="false">
+                <field name="name" />
+                <field name="code" />
+                <field name="date_start" />
+                <field name="date_stop" />
+                <field name="year_id" />
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Action Of Form & Tree Views Of Academic Year Information -->
+    <record id="action_school_year_form" model="ir.actions.act_window">
+        <field name="name">School Year</field>
+        <field name="res_model">school.year</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- Action Of Form & Tree Views Of Academic Month Information -->
+    <record id="action_school_month_form" model="ir.actions.act_window">
+        <field name="name">Semester</field>
+        <field name="res_model">school.month</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+        
+    <menuitem id="menu_school_year_form" name="School Years" parent="menu_konfigurasi" sequence="10"/>
+    <menuitem id="menu_school_year_sub_form" name="Years" parent="menu_school_year_form" action="action_school_year_form" />
+    <menuitem id="menu_school_month_form" name="Semester" parent="menu_school_year_form" action="action_school_month_form" />
+        
+        
+</odoo>

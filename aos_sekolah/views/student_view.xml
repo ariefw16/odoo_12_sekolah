@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+    
+    <record id="view_partner_student_tree" model="ir.ui.view">
+        <field name="name">res.partner.student.tree</field>
+        <field name="model">res.partner</field>
+        <field eval="8" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="Students" create="false">
+                <field name="display_name" string="Name"/>
+                <field name="nis"/>
+                <field name="year_id"/>
+                <field name="level_id"/>
+                <field name="grade_id"/>
+                <field name="grade_line_id"/>
+                <field name="state"/>
+                <field name="function" invisible="1"/>
+                <field name="user_id" invisible="1"/>
+                <field name="is_company" invisible="1"/>
+                <field name="country_id" invisible="1"/>
+                <field name="parent_id" invisible="1"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    
+	<record id="view_partner_student_form" model="ir.ui.view">
+        <field name="name">res.partner.student.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Students" create="false">
+            	<header>
+                    <button class="oe_highlight oe_stat_button" name="set_confirm" type="object" string="Confirm" states="draft,cancel"/>
+                    <button class="oe_highlight oe_stat_button" name="set_active" type="object" string="Activate" states="confirm,terminate,alumni,update"/>
+                    <button class="oe_stat_button" name="set_to_draft" type="object" string="Non Activate" states="confirm,active" />
+                    <button class="oe_stat_button" name="set_to_leave" string="Set to Leave" type="object" states="active"/>
+                    <button class="oe_stat_button" name="set_alumni" string="Set to Graduate" type="object" states="active" />
+                    <button class="oe_stat_button" name="set_terminate" string="Set to Terminate" type="object" states="active"/>
+                    <!-- <button class="oe_stat_button" name="set_to_update" type="object" string="Update Data" states="active" /> -->
+                    <button class="oe_stat_button" name="set_to_cancel" type="object" string="Cancel" states="draft,confirm" />
+                    <!-- <button class="oe_stat_button" name="grade_next_action" type="object" string="Grade"/> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,active,alumni,cancel"/>
+                </header>
+            	<sheet>
+            		<div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object"
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                options='{"terminology": "archive"}'/>
+                        </button>
+	                    <button type="object"
+	                        class="oe_stat_button"
+	                        id="invoice_button"
+	                        icon="fa-pencil-square-o"
+	                        name="open_partner_history"
+	                        groups="aos_sekolah.group_school_invoice"
+	                        context="{'default_partner_id': active_id}">
+	                        <div class="o_form_field o_stat_info">
+	                            <span class="o_stat_value"><field name="total_invoiced" widget='monetary' options="{'currency_field': 'currency_id'}"/></span>
+	                            <span class="o_stat_text">Invoice</span>
+	                        </div>
+	                    </button>
+                    </div>
+	            	<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [150, 150]}'/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name" attrs="{'invisible': [('parent_id','=',None)], 'readonly': [('state','not in',('draft','update','cancel'))],'required': [('parent_id','!=',None),('state','in',('draft','update')),('is_student','=',True)]}"/>
+                        </h1>
+                        <div class="o_row">                        	
+                        	<field name="nis" class="oe_inline" placeholder="Nomor Induk Siswa" attrs="{'readonly': [('state','not in',('draft','update','confirm','cancel'))]}"/>
+                        </div>
+                    </div>                   
+                	<group>			                		
+	                    <group name="personal_detail">
+	                    	<field name="parent_id" options="{'no_create': true}" attrs="{'invisible': [('parent_id','=',False)], 'readonly': [('state','not in',('draft','update','cancel'))]}" string="Related Student"/>
+	                    	<field name="reg_code" class="oe_inline" placeholder="Registration Number" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+	                        <field name="type_student" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>	   
+	                    	<field name="year_id" options="{'no_create': true, 'no_open': True}" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+	                    	<label for="grade_id"/>
+							<div>
+                					<field name="level_id" options="{'no_create': true, 'no_open': True}" placeholder="Level" style="width: 25%%" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/> / 
+								<field name="grade_id" options="{'no_create': true, 'no_open': True}" domain="[('level_id','=',level_id)]" placeholder="Grade" style="width: 25%%" attrs="{'readonly': [('state','not in',('draft','update','confirm','cancel'))],'required': [('state','in',('draft','update','confirm')),('is_student','=',True)]}"/> / 
+	                            <field name="grade_line_id" options="{'no_create': true, 'no_open': True}" domain="[('grade_id','=',grade_id)]" style="width: 20%%" placeholder="Classroom" attrs="{'readonly': [('state','not in',('draft','update','confirm','cancel'))]}"/>
+	                    		<button name="%(action_grade_next_student)d" attrs="{'invisible': [('state','!=','active')]}" string="Next Grade" type="action" class="oe_inline fa fa-arrow-right oe_link"/>
+	                        </div>            	
+	                        <field name="gender" string="Gender" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+	                        <label for="place_of_birth" class="oe_edit_only" string="Tempat/Tanggal Lahir"/>
+	                        <div>
+	                            <field name="place_of_birth" placeholder="Place of Birth" style="width: 50%%" class="oe_inline" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>,
+	                            <field name="date_of_birth" placeholder="Date of Birth" style="width: 27%%" class="oe_inline" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+	                        </div>
+	                        <field name="religion"/>
+	                        <field name="blood_group" placeholder="A, B, AB, O" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                        <field name="age"/>
+	                    </group>
+	                    <group name="personal_contact">			   
+	                    	<field name="is_student" invisible="1" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                    	<field name="admission_date" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+	                    	<field name="date_start" attrs="{'readonly': [('state','not in',('draft','update','confirm'))]}"/>
+                        	<field name="email" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                        <field name="phone" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                        <field name="mobile" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>	   
+	                        <field name="category_id" widget="many2many_tags" placeholder="Tags..." options="{'no_create_edit': True}" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                        <field name="is_current" invisible="1" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                    </group>
+            		</group>
+	                <notebook colspan="4">
+		                <page name="personal_information" string="Address Information">
+                			<group>
+			                    <group name="address">
+			                    	<field name="type" attrs="{'invisible': [('parent_id','=', False)]}" groups="base.group_no_one"/>
+			                        <label for="street" string="Address" />
+			                        <div name="div_address">
+			                            <field name="street" placeholder="Street..." options="{'no_create': true}" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}"/>
+			                            <field name="street2" placeholder="Street2..." options="{'no_create': true}" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+			                            <div class="address_format">
+			                                <field name="city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+			                                <field name="state_id" class="oe_no_button" placeholder="Provice" style="width: 37%%" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+			                                <field name="zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+			                            </div>
+			                            <field name="country_id" placeholder="Country" class="oe_no_button" options='{"no_open": True, "no_create": True}'  attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+			                        </div>
+			                     </group>	
+	                             <group>
+	                             	<field name="emergency_contact" options='{"always_reload": True, "no_create": True}' attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                             	<field name="emergency_phone" options='{"always_reload": True, "no_create": True}' attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                             	<field name="contact_info" attrs="{'readonly': [('state','not in',('draft','update','cancel'))]}"/>
+	                             </group>	                    
+		                	 </group>
+		                	 <group name="student_invoice" string="Student Invoice" colspan="4" col="4">	  
+                                <field name="company_id" invisible="1"/>
+			                	 <field name="fee_line" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('draft','update','confirm'))]}">
+				                    <tree string="Student Invoice" editable="bottom" decoration-info="state in ('draft','to_invoice','to_billing')">
+						                <field name="fee_line_id" options='{"no_open": True, "no_create": True}'/>
+						                <field name="product_id" invisible="1"/>
+						                <field name="name" invisible="1"/>
+						                <field name="quantity" invisible="0"/>
+						                <field name="qty_invoiced"/>
+						                <field name="qty_to_invoice" invisible="0"/>
+						                <field name="amount"/>
+						                <field name="discount"/>
+						                <field name="amount_subtotal"/>
+						                <!-- <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+	                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/> -->
+						                <field name="type"/>
+						                <field name="date_start" invisible="1"/>
+						                <field name="date_next"/>
+					                	<field name="stop" readonly="1"/>
+						                <field name="state"/>
+						            </tree>
+						            <form string="Student Invoice">
+						            	<header>	
+						                	<button name="action_invoice" string="Create Invoice" type="object"/>
+						                	<button name="action_stop_invoice" string="Stop Invoice" type="object"/>				            		
+						                	<field name="state" widget="statusbar"/>
+						            	</header>
+						            	<group col="4" colspan="4">
+							                <field name="fee_line_id" options='{"no_open": True, "no_create": True}'/>
+							                <field name="product_id" options='{"no_open": True, "no_create": True}'/>
+							                <field name="name"/>
+							                <field name="quantity"/>
+							                <field name="amount"/>
+							                <field name="discount"/>
+							                <field name="amount_subtotal"/>
+							                <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+		                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+							                <field name="type"/>
+						                	<field name="date_start" invisible="1"/>
+						                	<field name="date_next"/>
+						                	<field name="stop" readonly="1"/>
+						                </group>
+						                <div>
+	                                        <label for="invoice_lines"/>
+	                                        <field name="invoice_lines"/>
+	                                    </div>
+						            </form>
+				                </field>              	                  
+		                	 </group>
+		                </page>
+		                <page string="Graduation History">
+                            <field name="graduate_lines">
+                            	<tree string="Graduate History" create="false">
+                            		<field name="sequence"/>
+                            		<field name="name"/>
+                            		<field name="graduate_date"/>
+                            		<field name="year_id"/>
+                            		<field name="grade_id"/>
+                            		<field name="grade_line_id"/>
+                            		<field name="class_rank"/>
+                            		<field name="average_score"/>
+                            	</tree>                           
+                                <form string="Graduate History">
+                                    <sheet>
+                                        <group>			                		
+						                    <group name="personal_detail">
+						                    	<field name="name" class="oe_inline"/>
+						                        <field name="graduate_date"/>
+			                            		<field name="class_rank"/>
+			                            		<field name="average_score"/>
+						                    </group>
+						                    <group name="personal_grade">
+			                            		<field name="year_id"/>
+			                            		<field name="grade_id"/>
+			                            		<field name="grade_line_id"/>
+						                    </group>
+					            		</group>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_average_score" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+		                <page name="school_information" string="School Information">
+                            <field name="school_lines" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True),('type_student','=','move')]}">
+                                <tree string="Previous School" editable="bottom">
+                                    <field name="name" />
+                                    <field name="registration_no" />
+                                    <field name="admission_date" />
+                                    <field name="exit_date" />
+                                    <field name="grade_id" />
+                                </tree>
+                                <form string="Previous School">
+                                    <separator string="Previous School" />
+                                    <group col="4" colspan="4">
+                                        <field name="name" placeholder="Name School" />
+                                        <field name="registration_no" placeholder="NIS" />
+                                        <field name="admission_date" />
+                                        <field name="exit_date" />
+                                        <field name="grade_id" placeholder="Kelas"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page name="family_information" string="Family Contacts">                        	
+		                	 <group>
+	                             <field name="family_lines" nolabel="1" colspan="4" attrs="{'readonly': [('state','not in',('draft','update','cancel'))],'required': [('state','in',('draft','update')),('is_student','=',True)]}">
+	                                <tree string="Family Information" editable="bottom">
+	                                    <field name="name" string="Name" />
+	                                    <field name="relation" />
+	                                    <field name="phone" />
+	                                    <field name="email" />
+	                                </tree>
+	                                <form string="Family Information">
+	                                    <group col="4">
+	                                        <group col="2">
+	                                            <separator colspan="2" />
+	                                            <field name="name" placeholder="Name"/>
+	                                            <field name="relation" placeholder="Relation" />
+	                                        </group>
+	                                        <group col="2">
+	                                            <separator colspan="2" />
+	                                            <field name="phone" placeholder="Phone Number" />
+	                                            <field name="email" placeholder="Email Address" />
+	                                        </group>
+	                                    </group>
+	                                </form>
+	                            </field>
+                            </group>
+                        </page>
+                        <page name="notes_information" string="Notes">
+                            <form string="Catatan">
+                                <field name="comment" nolabel="1" colspan="4" />
+                            </form>
+                        </page>
+                        <page string="Accounting" name="accounting" groups="base.group_no_one">
+		                    <group>
+		                        <group name="acc_sale">	 
+			                    	<field name="customer" string="Student"/>	   
+		                            <field name="credit" groups="base.group_no_one" attrs="{'invisible': [('customer','=',False)]}"/>
+		                            <field name="property_account_receivable_id" options="{'no_create': True, 'no_open': True}" domain="[('user_type_id.type', '=', 'receivable')]" attrs="{'invisible': [('customer','=',False)]}"/>
+		                        </group>
+		                        <group name="acc_purchase">
+			                    	<field name="supplier" string="Teacher"/>
+		                            <field name="debit" groups="base.group_no_one" attrs="{'invisible': [('supplier','=',False)]}"/>
+		                            <field name="property_account_payable_id" options="{'no_create': True, 'no_open': True}" domain="[('user_type_id.type', '=', 'payable')]" attrs="{'invisible': [('supplier','=',False)]}"/>
+		                        </group>
+		                    </group>
+		                </page>
+	                </notebook>
+	            </sheet>
+	            <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+    
+    <!-- Student Kanban View -->
+    <record model="ir.ui.view" id="res_partner_kanban_student_view">
+        <field name="name">res.partner.kanban.student</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_partner_kanban" create="false">
+                <field name="color"/>
+                <field name="display_name"/>
+                <field name="title"/>
+                <field name="email"/>
+                <field name="parent_id"/>
+                <field name="is_company"/>
+                <field name="function"/>
+                <field name="phone"/>
+                <field name="street"/>
+                <field name="street2"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <field name="country_id"/>
+                <field name="mobile"/>
+                <field name="state_id"/>
+                <field name="category_id"/>
+                <field name="image_small"/>
+                <field name="type"/>
+                <field name="is_student"/>
+                <field name="nis"/>
+                <field name="grade_id"/>
+                <field name="grade_line_id"/>    
+                <field name="state"/>     
+                <field name="type_student"/>    
+                <field name="year_id"/>   
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_res_partner_kanban">
+                            <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                            <div class="o_kanban_image">
+                                <t t-if="record.image_small.raw_value">
+                                    <img t-att-src="kanban_image('res.partner', 'image_small', record.id.value)"/>
+                                </t>
+                                <t t-if="!record.image_small.raw_value">
+                                    <t t-if="record.type.raw_value === 'delivery'">
+                                        <img t-att-src='_s + "/base/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                    </t>
+                                    <t t-if="record.type.raw_value === 'invoice'">
+                                        <img t-att-src='_s + "/base/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                     </t>
+                                    <t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery'">
+                                        <t t-if="record.is_company.raw_value === true">
+                                            <img t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+                                        </t>
+                                        <t t-if="record.is_company.raw_value === false">
+                                            <img t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="oe_partner_heading"><field name="display_name"/></strong>
+                                <ul>
+                                    <li t-if="record.nis.raw_value"><field name="nis"/></li>
+                                    <li t-if="record.year_id.raw_value"><field name="year_id"/></li>
+                                    <li t-if="!record.parent_id.raw_value and record.grade_id.raw_value"><field name="grade_id"/> / <field name="grade_line_id"/></li>
+                                    <!-- <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li> -->
+                                    <li t-if="record.type_student.raw_value">Ket: <field name="type_student"/></li>
+                                    <span t-if="record.state.raw_value" class="badge"><li t-if="record.state.raw_value"><field name="state"/></li></span>
+                                    <!-- <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li> -->
+                                </ul>
+                                <div class="oe_kanban_partner_links"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    
+    <record id="action_students" model="ir.actions.act_window">
+        <field name="name">Acceptance Students</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('state','not in',('draft','cancel')),('is_student','=',True),('is_current','=',True)]</field>
+        <field name="context">{'is_student': 1, 'is_current': 1, 'default_customer': 0, 'default_supplier': 0, 'search_default_state_confirm': 1}</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_partner_student_filter"/>
+        <field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+			  Click to add a contact student in your address book.
+			</p><p>
+			  Odoo helps you easily track all activities related to
+			  a student: discussions, history of business opportunities,
+			  documents, etc.
+			</p>
+        </field>
+    </record>
+    <record id="action_student_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="res_partner_kanban_student_view"/>
+        <field name="act_window_id" ref="action_students"/>
+    </record>
+    <record id="action_student_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_partner_student_tree"/>
+        <field name="act_window_id" ref="action_students"/>
+    </record>
+    <record id="action_student_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_student_form"/>
+        <field name="act_window_id" ref="action_students"/>
+    </record>
+
+    <menuitem name="Acceptance Students"
+        id="menu_active_students"
+        sequence="10"
+        groups="aos_sekolah.group_school_student"
+        action="action_students"
+        parent="menu_students"/>
+        
+    <record id="action_siswa_students" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('state','not in',('draft','cancel')),('is_student','=',True),('is_current','=',True)]</field>
+        <field name="context">{'is_student': 1, 'is_current': 1, 'default_customer': 0, 'default_supplier': 0, 'search_default_state_confirm': 1}</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_res_partner_student_filter"/>
+        <field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+			  Click to add a contact student in your address book.
+			</p><p>
+			  Odoo helps you easily track all activities related to
+			  a student: discussions, history of business opportunities,
+			  documents, etc.
+			</p>
+        </field>
+    </record>
+    <record id="action_siswa_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="res_partner_kanban_student_view"/>
+        <field name="act_window_id" ref="action_siswa_students"/>
+    </record>
+    <record id="action_siswa_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_partner_student_tree"/>
+        <field name="act_window_id" ref="action_siswa_students"/>
+    </record>
+    <record id="action_siswa_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_partner_student_form"/>
+        <field name="act_window_id" ref="action_siswa_students"/>
+    </record>
+
+    <menuitem name="Students"
+        id="menu_active_siswa"
+        sequence="20"
+        groups="aos_sekolah.group_school_student"
+        action="action_siswa_students"
+        parent="menu_school"/>
+    <!-- Student History -->
+    <!-- <record id="view_school_graduate_history_form" model="ir.ui.view">
+        <field name="name">graduate.history.form</field>
+        <field name="model">graduate.history</field>
+        <field name="arch" type="xml">
+            <form string="Graduation History">
+                <sheet>
+                    <group col="4" colspan="4">    
+                		<field name="partner_id"/>                    
+		                <field name="name"/>
+		                <field name="graduate_date"/>
+		                <field name="year_id"/>
+		                <field name="grade_id"/>
+		                <field name="grade_line_id"/>
+		                <field name="class_rank"/>
+		                <field name="average_score"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+    <record id="view_school_graduate_history_tree" model="ir.ui.view">
+        <field name="name">graduate.history.tree</field>
+        <field name="model">graduate.history</field>
+        <field name="arch" type="xml">
+            <tree string="Graduation Histories" create="false">
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="graduate_date"/>
+                <field name="year_id"/>
+                <field name="level_id"/>
+                <field name="grade_id"/>
+                <field name="grade_line_id"/>
+                <!-- <field name="class_rank"/>
+                <field name="average_score"/> -->
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_graduate_history_pivot">
+        <field name="name">graduate.history.pivot</field>
+        <field name="model">graduate.history</field>
+        <field name="arch" type="xml">
+            <!-- <pivot string="Graduation Histories" display_class_rank="true"> -->
+            <pivot string="Graduation Histories">
+                <field name="partner_id" />
+                <field name="year_id" type="measure"/>
+                <field name="count_student" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_graduate_history_graph">
+        <field name="name">graduate.history.graph</field>
+        <field name="model">graduate.history</field>
+        <field name="arch" type="xml">
+            <graph string="Graduation Histories">
+                <field name="partner_id"/>
+                <field name="count_student" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_graduate_history_search">
+        <field name="name">graduate.history.search</field>
+        <field name="model">graduate.history</field>
+        <field name="arch" type="xml">
+            <search string="Graduation Histories">
+                <field name="partner_id"/>
+                <field name="level_id"/>
+                <field name="year_id"/>
+                <field name="grade_id"/>
+                <field name="state"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_partner_id" string="Students" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_by_year_id" string="Year" context="{'group_by':'year_id'}"/>
+                    <filter name="group_by_level_id" string="Level" context="{'group_by':'level_id'}"/>
+                    <filter name="group_by_grade_id" string="Grade" context="{'group_by':'grade_id'}"/>
+                    <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_students_history" model="ir.actions.act_window">
+        <field name="name">Graduation Histories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">graduate.history</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('partner_id.is_student','=',True)]</field>
+        <field name="context">{'default_group_by_partner_id': 1}</field>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="view_graduate_history_search"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a contact in your contacts directory.
+          </p><p>
+            Odoo helps you easily track all activities related to
+            a customer: discussions, history of business opportunities,
+            documents, etc.
+          </p>
+        </field>
+    </record>
+    <!-- <record id="action_student_history_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_graduate_history_graph"/>
+        <field name="act_window_id" ref="action_students_history"/>
+    </record> -->
+    <!-- <record id="action_student_history_view_pivot" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_graduate_history_pivot"/>
+        <field name="act_window_id" ref="action_students_history"/>
+    </record> -->
+    <record id="action_student_history_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_school_graduate_history_tree"/>
+        <field name="act_window_id" ref="action_students_history"/>
+    </record>
+    <!-- <record id="action_student_history_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_school_graduate_history_form"/>
+        <field name="act_window_id" ref="action_students_history"/>
+    </record> -->
+
+    <menuitem name="Graduation Histories"
+        id="menu_students_history"
+        sequence="15"
+        action="action_students_history"
+        parent="menu_laporan_form"/>
+    <!-- GURU -->
+    <!-- KELAS -->
+    <!-- NILAI KELAS -->
+    <!-- LAPORAN -->
+    <!-- KONFIGUASI -->
+</odoo>

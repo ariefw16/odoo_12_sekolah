@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<odoo>
+    <record model="ir.cron" id="fee_register_cron_for_invoice">
+        
+
+
+       <field name="name">Generate Recurring Invoices for Fee Register Students</field>
+       <field name="interval_number">1</field>
+       <field name="interval_type">hours</field>
+       <field name="numbercall">-1</field>
+       <!-- <field name="model" eval="'fee.register.line'"/> -->
+       <field name="model_id" ref="model_fee_register_line"/>
+       <!-- <field name="function" eval="'_cron_recurring_create_invoice_fee'"/> -->
+
+       <field name="doall" eval="False"/>
+       <field name="code">model._cron_recurring_create_invoice_fee()</field>
+       <field name="state">code</field>
+
+    </record>
+    
+	<record model="ir.cron" id="school_year_cron">
+       <field name="name">Generate School Year Every End of Year</field>
+       <field name="interval_number">11</field>
+       <field name="interval_type">months</field>
+       <field name="numbercall">-1</field>
+       <!-- <field name="model" eval="'school.year'"/> -->
+       <field name="model_id" ref="model_school_year"/>
+       <!-- <field name="function" eval="'_cron_create_school_year'"/> -->
+       <field name="doall" eval="False"/>
+       <field name="code">model._cron_create_school_year()</field>
+       <field name="state">code</field>
+    </record>
+    
+    <record model="ir.cron" id="res_partner_cron_for_grade">
+       <field name="name">Graduate Active Students</field>
+       <field name="interval_number">1</field>
+       <field name="interval_type">days</field>
+       <field name="numbercall">-1</field>
+       <!-- <field name="model" eval="'res.partner'"/> -->
+       <field name="model_id" ref="base.model_res_partner"/>
+       <!-- <field name="function" eval="'_cron_grade_end_of_year'"/> -->
+       <field name="doall" eval="False"/>
+       <field name="code">model._cron_grade_end_of_year()</field>
+       <field name="state">code</field>
+    </record>
+    
+</odoo>

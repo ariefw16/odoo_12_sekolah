@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_school_config_settings" model="ir.ui.view">
+            <field name="name">school settings</field>
+            <field name="model">school.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="School Configuration" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <field name="has_default_school" invisible="1" />
+                    <group string="School" groups="base.group_multi_company" attrs="{'invisible': [('has_default_school', '=', True)]}">
+                        <label for="id" string="School"/>
+                        <div>
+                            <div attrs="{'invisible': [('has_default_school', '=', True)]}">
+                                <field name="company_id" options="{'no_create': True}" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                    <group string="Automatic" name="auto">
+                        <label for="id" string="Options"/>
+                        <div name="school_config">
+                            <div>
+                                <label for="auto_graduate"/>
+                                <field name="auto_graduate" class="oe_inline"/>
+                            </div>
+                            <div>
+                                <label for="auto_fiscalyear"/>
+                                <field name="auto_fiscalyear" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                    <div>
+                        <span>(*) This configuration is related to the school you're logged into.</span>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_school_config" model="ir.actions.act_window">
+            <field name="name">Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">school.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="menu_school_config" name="Configuration" parent="menu_konfigurasi"
+            sequence="0" action="action_school_config" groups="group_school_administrator"/>
+    </data>
+</odoo>

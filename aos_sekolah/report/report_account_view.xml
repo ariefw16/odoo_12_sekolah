@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>		
+		
+		<report id="fis_new_voucher" model="account.voucher" name="fis.new.voucher"   
+			file="aos_sekolah/html/bukti_pembayaran.html" string="Bukti Pembayaran" 
+			report_type="webkit"/>  
+			
+		<record id="fis_new_voucher" model="ir.actions.report.xml">
+            <field name="webkit_header" ref="no_header_footer_A5"/>
+        </record>
+        
+        <report id="report_adv_voucher_webkit" 
+			name="webkit.advance.voucher"
+			string="Advance Student"
+			file="aos_sekolah/html/uang_muka.html"
+			report_type="webkit" 
+			model="account.voucher"
+			auto="False" 
+			menu="False" />
+			
+		<record id="report_adv_voucher_webkit" model="ir.actions.report.xml">
+            <field name="webkit_header" ref="no_header_footer_A4"/>
+        </record>
+
+	</data>
+</openerp>

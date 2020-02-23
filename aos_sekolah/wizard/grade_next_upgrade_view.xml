@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--Account Move lines-->
+        <record id="grade_next_student_view" model="ir.ui.view">
+            <field name="name">Grade Next Students</field>
+            <field name="model">grade.next.student</field>
+            <field name="arch" type="xml">
+                <form string="Kelulusan Siswa">
+                    <!-- <label string="All selected students will be generate to next grade. You won't be able to modify them afterwards."/> -->
+                    <group colspan="4" col="4">
+                    	<field name="year_id" required="1"/>
+                    	<field name="level_id" required="1"/>
+                    	<field name="grade_id" domain="[('level_id','=',level_id)]" required="1"/>
+                    	<field name="grade_line_id" domain="[('grade_id','=',grade_id)]" required="1"/>
+                    	<field name="graduate_date" required="1"/>
+                    	<field name="class_rank" required="1"/>
+                    	<field name="average_score" invisible="1"/>                	
+                    </group>
+                    <footer>
+                        <button string="Upgrade" name="grade_next_move" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_grade_next_student" model="ir.actions.act_window">
+            <field name="name">Kelulusan Siswa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">grade.next.student</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="grade_next_student_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="help">This wizard will upgrade next grade all students selected. Once student grade changed, you can not update them anymore.</field>
+        </record>
+
+        <record model="ir.actions.server" id="grade_next_student_values">
+            <field name="model_id" ref="base.model_res_partner" />
+            <field name="name">Kelulusan Siswa</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_grade_next_student'))" />
+            <field name="binding_model_id" ref="base.model_res_partner" />
+            <field name="key">action</field>
+            <field name="model">res.partner</field>
+        </record>
+
+    </data>
+</openerp>

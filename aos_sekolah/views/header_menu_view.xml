@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<menuitem name="School"
+	        id="menu_school"
+	        sequence="10"
+	        groups="group_school_admission,group_school_student,group_school_update_student,group_school_invoice,group_school_payment,group_school_analysis,group_school_administrator"
+	        web_icon="aos_sekolah,static/description/school.png"/>
+	        
+    <!-- <menuitem id="menu_news_form" name="Pengumuman" parent="menu_school" sequence="10"/> -->
+	
+	<!-- <menuitem id="menu_pendaftaran_form" name="Pendaftaran" parent="menu_school" sequence="20"/> -->
+    
+	<menuitem name="Admission Student"
+        id="menu_students"
+        sequence="10"
+        groups="aos_sekolah.group_school_student,aos_sekolah.group_school_update_student"
+        parent="menu_school"/>
+        
+    <menuitem id="menu_invoice_students" name="Student Invoices" 
+    		groups="group_school_invoice,group_school_payment"
+    		parent="menu_school" sequence="30"/>
+      
+    <menuitem id="menu_laporan_form" name="Reports" 
+    		groups="group_school_analysis"
+    		parent="menu_school" sequence="40"/>   
+          
+	<menuitem id="menu_konfigurasi" name="Configuration" 
+			groups="group_school_administrator"
+			parent="menu_school" sequence="99"/>
+    
+</odoo>

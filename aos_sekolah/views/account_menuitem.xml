@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+		<menuitem action="account.action_account_form" 
+			id="account.menu_action_account_form" 
+			parent="account.account_account_menu" sequence="10"/>
+		<menuitem id="account.menu_finance_entries" name="Journals" 
+			parent="account.menu_finance" sequence="4" groups="account.group_account_manager"/>
+		<menuitem id="account.menu_product_template_action" name="Products"
+            parent="account.account_account_menu" sequence="20"
+            action="product.product_template_action"/>
+            
+        <!-- <menuitem id="account_asset.menu_action_account_asset_asset_form" 
+        		parent="account.account_account_menu" sequence="30"
+        		action="account_asset.action_account_asset_asset_form" 
+        		groups="account.group_account_user"/>    -->
+            
+        <menuitem id="account.menu_account_customer" name="Customers"
+            parent="account.account_account_menu"
+            action="base.action_partner_customer_form" sequence="40"/>
+            
+        <menuitem id="account.menu_account_supplier" name="Vendors"
+            parent="account.account_account_menu"
+            action="base.action_partner_supplier_form" sequence="50"/>
+        
+        <menuitem action="account.action_tax_form" 
+        		id="account.menu_action_tax_form" 
+        		parent="account.account_account_menu" sequence="60"/>
+        
+        <menuitem action="account.action_account_fiscal_position_form"
+            id="account.menu_action_account_fiscal_position_form"
+            parent="account.account_account_menu" sequence="70"/>
+            
+		<menuitem action="account.action_account_bank_journal_form" 
+			id="account.menu_action_account_bank_journal_form" sequence="80" 
+			parent="account.account_account_menu" groups="account.group_account_manager"/>
+		
+		<menuitem action="account.action_account_journal_form" 
+			id="account.menu_action_account_journal_form" sequence="90" 
+			parent="account.account_account_menu" groups="account.group_account_manager"/>
+			
+		<menuitem id="account.account_tag_menu" 
+			parent="account.account_account_menu" sequence="100"
+			action="account.account_tag_action" groups="base.group_no_one"/>
+			
+		<menuitem id="account_chart_template_menu" 
+			parent="account.account_account_menu" sequence="110"
+			action="account.action_account_chart_template_form" groups="base.group_no_one"/>
+			
+		<record id="account.action_invoice_tree1" model="ir.actions.act_window">
+            <field name="name">Customer Invoice</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('partner_id.customer','=',True),('type','in',('out_invoice', 'out_refund'))]</field>
+            <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a customer invoice.
+              </p><p>
+                Odoo's electronic invoicing allows to ease and fasten the
+                collection of customer payments. Your customer receives the
+                invoice by email and he can pay online and/or import it
+                in his own system.
+              </p><p>
+                The discussions with your customer are automatically displayed at
+                the bottom of each invoice.
+              </p>
+            </field>
+        </record>
+        
+        <menuitem action="stock.action_receipt_picking_move" id="purchase.menu_action_picking_tree_in_move"
+            parent="purchase.menu_purchase_control" sequence="11" groups="base.group_no_one"/>
+            
+        <!-- NOT EXIST IN ODOO 12 -->
+	    <!-- <record id="purchase_order_form_aos_sekolah" model="ir.ui.view">
+	        <field name="name">purchase.order.form</field>
+	        <field name="model">purchase.order</field>
+		    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+		    <field name="arch" type="xml">							
+			    <xpath expr="//form/header/button[@name='action_view_picking']" position="attributes">
+		        	<attribute name="groups">base.group_no_one</attribute>
+		        </xpath>
+		    </field>
+		</record> -->
+	
+    </data>
+</odoo>
+

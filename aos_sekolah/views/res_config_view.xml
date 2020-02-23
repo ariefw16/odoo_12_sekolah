@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+	
+	<record id="view_account_config_settings_dos" model="ir.ui.view">
+        <field name="name">account settings</field>
+        <field name="model">account.config.settings</field>
+	    <field name="inherit_id" ref="account.view_account_config_settings"/>
+	    <field name="arch" type="xml">							
+		    <xpath expr="//group[@name='accounting']" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>														
+		    <xpath expr="//group[2]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>														
+		    <xpath expr="//group[3]" position="attributes">
+	        	<attribute name="groups">account.group_account_manager</attribute>
+	        </xpath>							
+		    <xpath expr="//group[@name='accounting']" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//separator[1]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//group[@name='bank_cash']" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//separator[2]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//group[@name='multi_currency']" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//separator[3]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>											
+		    <xpath expr="//group[@name='followup']" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>														
+		    <xpath expr="//group[7]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>														
+		    <xpath expr="//group[8]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>																
+		    <xpath expr="//group[9]" position="attributes">
+	        	<attribute name="groups">base.group_no_one</attribute>
+	        </xpath>								
+	    </field>
+	</record>
+	
+	
+</odoo>

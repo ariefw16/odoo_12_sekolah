@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<menuitem id="account_voucher.menu_action_sale_receipt" action="account_voucher.action_sale_receipt"
+		parent="account.menu_finance_receivables" sequence="10" groups="group_accounting_account_voucher"/>
+	
+	<menuitem id="account_voucher.menu_action_purchase_receipt" action="account_voucher.action_purchase_receipt"
+		parent="account.menu_finance_payables" sequence="4" groups="group_accounting_account_voucher"/>
+	
+	<record id="view_voucher_filter_aos_account_voucher" model="ir.ui.view">
+        <field name="name">account.voucher.select.aos_account_voucher</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_filter"/>
+        <field name="arch" type="xml">   	
+        	<field name="number" position="after">
+                <field name="name"/>
+                <field name="amount"/>
+        	</field>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="view_voucher_form">
+        <field name="name">account.voucher.form</field>
+        <field name="model">account.voucher</field>
+        <field name="arch" type="xml">
+        	<form string="Down Payment">
+	            <header>
+	                <button name="proforma_voucher" string="Validate" states="draft" class="oe_highlight" type="object"/>
+	                <button name="cancel_voucher" string="Cancel" type="object" states="draft,proforma"/>
+	                <button name="cancel_voucher" string="Cancel" type="object" states="posted" confirm="Are you sure you want to cancel this receipt?"/>
+	                <button name="action_cancel_draft" type="object" states="cancel" string="Set to Draft"/>
+	                <field name="state" widget="statusbar" statusbar_visible="draft,posted" statusbar_colors='{"proforma":"blue"}'/>
+	            </header>
+	            <sheet string="Down Payment">
+	                <label for="number" string="Down Payment"/>
+	                <h1>
+	                    <field name="number" readonly="1"/>
+	                </h1>
+	                <group>
+	                    <group>
+	                        <field name="payment_type" widget="radio"/>
+	                        <field name="voucher_type" invisible="1" widget="radio"/>
+	                        <field name="currency_id" invisible="1"/>
+	                        <field name="company_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_company"/>
+	                        <field name="partner_id" domain="[('state','in',('confirm','active','update')),('parent_id','=',False)]" string="Siswa" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True, "no_create": True, "no_open": True}'/>
+	                        <field name="pay_now" invisible="1" required="1"/>
+	                        <field name="name" attrs="{'invisible': [('pay_now', '=', 'pay_later')]}"/>
+	                    </group>
+	                    <group>
+	                        <field name="journal_id" widget="selection" groups="account.group_account_user"/>
+                			<field name="date"/>
+	                        <field name="date_due" attrs="{'invisible':[('pay_now','=','pay_now')]}"/>
+	                        <field name="account_id" invisible="1" options="{'no_create': True, 'no_open': True}"/>
+	                        <field name="user_id"/>
+	                        <field name="paid" invisible="1"/>
+	                    </group>
+                        <field name="voucher_account_ids" widget="many2many_tags" invisible="1"/>
+	                </group>
+	                <notebook>
+	                    <page string="Informasi">
+	                        <field name="line_ids" context="{'partner_id': partner_id, 'voucher_account_ids': voucher_account_ids}">
+	                            <tree string="Voucher Lines" editable="bottom">
+	                                <!-- <field name="product_id" domain="[('is_advance','=',True)]" options="{'no_create': True, 'no_open': True}"/> -->
+	                                <field name="name"/>
+									<!-- voucher_account_ids[0][2] NOTED -->
+	                                <!-- <field name="account_id" domain="[('id','in', voucher_account_ids and voucher_account_ids[0][2])]" options="{'no_create': True, 'no_open': True}"/> -->
+	                                <field name="account_analytic_id" invisible="1" domain="[('account_type','=','normal'), ('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
+	                                <field name="quantity" invisible="1"/>
+	                                <field name="price_unit"/>
+	                                <field name="tax_ids" widget="many2many_tags" invisible="1" domain="[('type_tax_use','=','sale')]"/>
+	                                <field name="price_subtotal" invisible="1"/>
+	                                <field name="currency_id" invisible="1"/>
+	                                <field name="company_id" invisible="1"/>
+	                            </tree>
+	                        </field>
+			                <group>
+	                            <group class="oe_subtotal_footer oe_right">
+	                                <field name="tax_amount" invisible="1"/>
+	                                <field name="amount"/>
+	                                <!-- <field name="amount_payment" widget="monetary"/>
+	                                <field name="amount_change"/> -->
+	                                <field name="check_amount_in_words_id" class="oe_right" colspan="2" nolabel="1"/>
+	                            </group>
+	                            <field name="narration" placeholder="Internal Notes" nolabel="1"/>
+			                </group>
+	                    </page>
+	                    <page string="Journal Items" attrs="{'invisible': [('state','!=','posted')]}" groups="account.group_account_user,account.group_account_manager">
+	                        <group>
+	                            <field name="move_id" readonly="1"/>
+	                        </group>
+	                    </page>
+	                </notebook>
+	                </sheet>
+	                <div class="oe_chatter">
+	                    <field name="message_follower_ids" widget="mail_followers"/>
+	                    <field name="message_ids" widget="mail_thread"/>
+	                </div>
+	            </form>
+        </field>
+    </record>
+    
+    <record id="action_review_voucher_list_aos_voucher" model="ir.actions.act_window">
+        <field name="name">Down Payment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.voucher</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'default_voucher_type': 'sale', 'default_pay_now': 'pay_now'}</field>
+        <field name="domain">[]</field>
+        <field name="search_view_id" eval="False"/> <!-- Force empty -->
+        <field name="view_id" eval="False"/> <!-- Force empty -->
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to define a voucher entries.
+          </p>
+        </field>
+    </record>
+    
+	<record id="action_aos_account_voucher_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account_voucher.view_voucher_tree"/>
+        <field name="act_window_id" ref="action_review_voucher_list_aos_voucher"/>
+    </record>
+
+    <record id="action_aos_account_voucher_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_voucher_form"/>
+        <field name="act_window_id" ref="action_review_voucher_list_aos_voucher"/>
+    </record>
+    
+	<menuitem id="voucher_entries_menu" 
+		action="action_review_voucher_list_aos_voucher" 
+		name="Down Payment" 
+		parent="menu_invoice_students"
+		groups="group_school_invoice,group_school_payment" sequence="10"/>
+	
+    <record model="ir.ui.view" id="view_voucher_tree_aos_account_voucher">
+        <field name="name">account.voucher.tree.aos_account_voucher</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_tree"/>
+        <field name="arch" type="xml">
+        	<field name="number" position="after">
+        		<field name="name"/>
+        	</field>
+        	<field name="partner_id" position="after">
+        		<field name="journal_id"/>
+        	</field>
+        </field>
+    </record>
+    <!-- <record model="ir.ui.view" id="view_voucher_tree_purchase_aos_account_voucher">
+        <field name="name">account.voucher.tree.supplier.aos_account_voucher</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_tree_purchase"/>
+        <field name="arch" type="xml">
+        	<field name="partner_id" position="after">
+        		<field name="transaction_type"/>
+        	</field>
+        </field>
+    </record> -->
+    <!--
+    <record model="ir.ui.view" id="view_voucher_tree_aos_account_voucher">
+        <field name="name">account.voucher.tree.account_voucher</field>
+        <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_voucher_tree"/>
+        <field name="arch" type="xml">
+        	<xpath expr="/tree/field[@name='complete_name']" position="after">
+        		<field name="type" invisible="1"/>
+        	</xpath>
+        </field>
+    </record>
+    -->
+</odoo>

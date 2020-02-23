@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        
+    
+    <!-- <record id="view_school_fee_register_form" model="ir.ui.view">
+        <field name="name">fee.register.form</field>
+        <field name="model">fee.register</field>
+        <field name="arch" type="xml">
+            <form string="Registrasi Biaya">
+            	<header>
+            		<button name="action_confirm" string="Validasi" type="object" states="draft"/>
+            		<button name="action_first_open" string="Tagihkan" type="object" states="confirm"/>
+            		<button name="action_continue_open" string="Tagihkan" type="object" states="open"/>
+            		<button name="action_done" string="Lunas" type="object" states="open"/>
+            		<button name="action_cancel" string="Batal" type="object" states="draft,confirm,open,done"/>
+            		<button name="action_to_draft" string="Set to Draft" type="object" states="cancel"/>
+                <field name="state" widget="statusbar" readonly="1"/>
+            	</header>
+                <sheet>
+                    <group col="4" colspan="4">
+                        <field name="name" placeholder="Nomor"/>
+                        <field name="partner_id"/>
+                        <field name="grade_id"/>
+                        <field name="grade_line_id" domain="[('grade_id','=',grade_id)]"/>
+            			<field name="date"/>
+                        <field name="fee_id" domain="[('bill_type','=',bill_type)]"/>
+                        <field name="bill_type" invisible="0"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Daftar Biaya">
+                            <field name="fee_line" nolabel="1" colspan="4">
+                            	<tree string="Daftar Biaya" editable="bottom" decoration-info="state in ('to_invoice','to_billing')">
+					                <field name="fee_line_id"/>
+					                <field name="product_id"/>
+					                <field name="name" invisible="1"/>
+					                <field name="quantity"/>
+					                <field name="qty_invoiced"/>
+					                <field name="qty_to_invoice" invisible="1"/>
+					                <field name="amount"/>
+					                <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+					                <field name="type"/>
+					                <field name="date_start"/>
+					                <field name="state"/>
+					            </tree>
+					            <form string="Daftar Biaya">
+					            	<header>					            		
+					                	<field name="state" widget="statusbar"/>
+					            	</header>
+					            	<group col="4" colspan="4">
+						                <field name="fee_line_id"/>
+						                <field name="product_id"/>
+						                <field name="name"/>
+					                	<field name="date_start"/>
+						                <field name="quantity"/>
+						                <field name="amount"/>
+						                <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+	                                        domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+						                <field name="type"/>
+					                	<field name="date_start" invisible="1"/>
+					                </group>
+					                <div>
+                                        <label for="invoice_lines"/>
+                                        <field name="invoice_lines"/>
+                                    </div>
+					            </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed"/>
+                                <field name="amount_tax"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator"/>                            
+                            </group>
+                        </page>
+                        <page string="Informasi Lain">
+                        	<group col="4" colspan="4">
+                        		<field name="type"/>
+                        		<field name="journal_id"/>
+                        		<field name="currency_id"/>
+                        		<field name="company_id"/>
+                        	</group>                        	
+                        	<field name="tax_line_ids">
+                                <tree editable="bottom" string="Taxes" create="0">
+                                    <field name="name"/>
+                                    <field name="tax_id" invisible="1"/>
+                                    <field name="account_analytic_id" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="manual" invisible="1"/>
+                                    <field name="account_id" groups="account.group_account_user"/>
+                                    <field name="amount"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_school_fee_register_tree" model="ir.ui.view">
+        <field name="name">fee.register.tree</field>
+        <field name="model">fee.register</field>
+        <field name="arch" type="xml">
+            <tree string="Registrasi Biaya">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="fee_id"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="action_fee_register_form" model="ir.actions.act_window">
+        <field name="name">Registrasi Biaya</field>
+        <field name="res_model">fee.register</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type','=','out_invoice')]</field>
+        <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
+    </record> -->
+    <!-- <menuitem id="menu_fee_register_form" name="Fee Registration" parent="menu_biaya_biaya_form" action="action_fee_register_form"  sequence="10"/> -->
+    <record id="student_invoice_tree1" model="ir.ui.view">
+        <field name="name">account.invoice.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">
+                <field name="partner_id" groups="base.group_user" string="Student"/>
+                <field name="year_id"/>
+                <field name="level_id"/>
+		        	<field name="grade_id"/>
+		        	<field name="grade_line_id"/>
+                <field name="date_invoice"/>
+                <field name="number"/>
+                <field name="commercial_partner_id" invisible="1"/>
+                <field name="reference" invisible="1"/>
+                <field name="name" invisible="1"/>
+                <field name="journal_id" invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="user_id" invisible="1"/>
+                <field name="date_due"/>
+                <field name="origin"/>
+                <field name="amount_total_signed" string="Total" sum="Total"/>
+                <field name="residual_signed" string="Amount Due" sum="Amount Due"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="state"/>
+                <field name="type" invisible="context.get('type',True)"/>
+            </tree>
+        </field>
+    </record>
+    <!-- <record id="student_invoice_tree" model="ir.ui.view">
+	    <field name="name">account.invoice.tree</field>
+	    <field name="model">account.invoice</field>
+	    <field name="inherit_id" ref="account.invoice_tree"/>
+	    <field name="arch" type="xml">
+	    	<field name="partner_id" position="after">
+	        	<field name="year_id"/>
+	        	<field name="grade_id"/>
+	        	<field name="grade_line_id"/>
+	        </field>
+	    </field>
+	</record> -->
+	
+    <record id="student_invoice_form" model="ir.ui.view">
+	    <field name="name">account.invoice.form</field>
+	    <field name="model">account.invoice</field>
+	    <field name="inherit_id" ref="account.invoice_form"/>
+	    <field name="arch" type="xml">
+	    	<xpath expr="//field[@name='payment_term_id']" position="after">
+	        	<field name="year_id" attrs="{'invisible': [('year_id','=',False)]}"/>
+	        </xpath>
+	        <xpath expr="//field[@name='user_id']" position="after">
+	        		<label for="grade_id" attrs="{'invisible': [('grade_id','=',False)]}"/>
+				<div attrs="{'invisible': [('grade_id','=',False)]}">
+					<field name="level_id" options="{'no_create': true, 'no_open': True}" placeholder="Level" style="width: 25%%"/> / 
+					<field name="grade_id" placeholder="Grade" style="width: 25%%"/> / 
+                    <field name="grade_line_id" domain="[('grade_id','=',grade_id)]" style="width: 20%%" placeholder="Classroom"/>
+                </div>
+	        </xpath>
+	    </field>
+	</record>
+	
+    <record id="action_invoice_tree_fee" model="ir.actions.act_window">
+        <field name="name">Student Invoices</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field eval="False" name="view_id"/>
+        <field name="domain">[('partner_id.is_student','=',True),('type','in',('out_invoice', 'out_refund'))]</field>
+        <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a customer invoice.
+          </p><p>
+            Odoo's electronic invoicing allows to ease and fasten the
+            collection of customer payments. Your customer receives the
+            invoice by email and he can pay online and/or import it
+            in his own system.
+          </p><p>
+            The discussions with your customer are automatically displayed at
+            the bottom of each invoice.
+          </p>
+        </field>
+    </record>
+
+
+    <record id="action_invoice_tree1_fee_view1" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="student_invoice_tree1"/>
+        <field name="act_window_id" ref="action_invoice_tree_fee"/>
+    </record>
+
+    <record id="action_invoice_tree1_fee_view2" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.invoice_form"/>
+        <field name="act_window_id" ref="action_invoice_tree_fee"/>
+    </record>
+
+    <menuitem action="action_invoice_tree_fee" 
+    		id="menu_action_invoice_tree1_fee" 
+	    	groups="group_school_invoice,group_school_payment"
+	    	parent="menu_invoice_students" sequence="5"/>
+
+    <record id="action_account_payments_fee" model="ir.actions.act_window">
+	    <field name="name">Student Payments</field>
+	    <field name="res_model">account.payment</field>
+	    <field name="view_type">form</field>
+	    <field name="view_mode">tree,form,graph</field>
+	    <field name="context">{'default_payment_type': 'inbound'}</field>
+	    <field name="domain">[('partner_type', '=', 'customer')]</field>
+	    <field name="view_id" ref="account.view_account_payment_tree"/>
+	    <field name="help" type="html">
+	        <p class="oe_view_nocontent_create">
+	          Click to register a payment
+	        </p><p>
+	          Payments are used to register liquidity movements (send, collect or transfer money).
+	          You can then process those payments by your own means or by using installed facilities.
+	        </p>
+	    </field>
+	</record>
+	
+	<record id="action_payment_tree1_fee_view1" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account.view_account_payment_tree"/>
+        <field name="act_window_id" ref="action_account_payments_fee"/>
+    </record>
+
+    <record id="action_payment_tree1_fee_view2" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.view_account_payment_form"/>
+        <field name="act_window_id" ref="action_account_payments_fee"/>
+    </record>
+    
+	<!-- <menuitem action="account.action_account_payments" id="menu_action_account_payments_receivable_fee" 
+			groups="group_school_payment"
+			parent="menu_biaya_biaya_form" sequence="30"/> -->
+	
+	<record id="view_partner_student_admission_form_fee" model="ir.ui.view">
+	    <field name="name">res.partner.form</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="aos_sekolah.view_partner_student_admission_form"/>
+	    <field name="arch" type="xml">
+	        <xpath expr="//field[@name='fee_line']" position="before">
+        		<group col="4" colspan="4">
+        			<field name="fee_id" attrs="{'readonly': [('state','not in',('draft','update'))]}" options='{"no_open": True, "no_create": True}'/>
+        			<field name="journal_id" invisible="1"/>
+                </group>
+	        </xpath>
+	        <xpath expr="//field[@name='fee_line']" position="after">
+	        		<field name="tax_line_ids" invisible="1">
+                    <tree editable="bottom" string="Taxes" create="0">
+                        <field name="name"/>
+                        <!--Need invisible fields for on_change to create all necessary info -->
+                        <field name="tax_id" invisible="1"/>
+                        <field name="account_analytic_id" invisible="1"/>
+                        <field name="sequence" invisible="1"/>
+                        <field name="manual" invisible="1"/>
+                        <field name="account_id" groups="account.group_account_user"/>
+                        <field name="amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                </field>
+	        </xpath>
+	    </field>
+	</record>
+	<record id="view_partner_student_form_fee" model="ir.ui.view">
+	    <field name="name">res.partner.form</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="aos_sekolah.view_partner_student_form"/>
+	    <field name="arch" type="xml">
+	        <xpath expr="//field[@name='fee_line']" position="before">
+        		<group col="4" colspan="4">
+        			<field name="fee_id" attrs="{'readonly': [('state','not in',('draft','update'))]}" options='{"no_open": True, "no_create": True}'/>
+        			<field name="journal_id" invisible="1"/>
+                </group>
+	        </xpath>
+	        <xpath expr="//field[@name='fee_line']" position="after">
+	        		<field name="tax_line_ids" invisible="1">
+                    <tree editable="bottom" string="Taxes" create="0">
+                        <field name="name"/>
+                        <!--Need invisible fields for on_change to create all necessary info -->
+                        <field name="tax_id" invisible="1"/>
+                        <field name="account_analytic_id" invisible="1"/>
+                        <field name="sequence" invisible="1"/>
+                        <field name="manual" invisible="1"/>
+                        <field name="account_id" groups="account.group_account_user"/>
+                        <field name="amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                </field>
+	        </xpath>
+	    </field>
+	</record>
+	<!-- <record id="view_partner_student_update_form_fee" model="ir.ui.view">
+	    <field name="name">res.partner.form</field>
+	    <field name="model">res.partner</field>
+	    <field name="inherit_id" ref="aos_sekolah.view_partner_student_update_form"/>
+	    <field name="arch" type="xml">
+	        <xpath expr="//field[@name='fee_line']" position="before">
+        			<group col="4" colspan="4">
+	        			<field name="fee_id" attrs="{'readonly': [('state','not in',('draft','update'))]}" options='{"no_open": True, "no_create": True}'/>
+	        			<field name="journal_id" invisible="1"/>
+                </group>
+	        </xpath>
+	        <xpath expr="//field[@name='fee_line']" position="after">
+	        		<field name="tax_line_ids" invisible="1">
+                    <tree editable="bottom" string="Taxes" create="0">
+                        <field name="name"/>
+                        <field name="tax_id" invisible="1"/>
+                        <field name="account_analytic_id" invisible="1"/>
+                        <field name="sequence" invisible="1"/>
+                        <field name="manual" invisible="1"/>
+                        <field name="account_id" groups="account.group_account_user"/>
+                        <field name="amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                </field>
+	        </xpath>
+	    </field>
+	</record> -->
+	<!-- <record id="view_calon_admission_student_form_fee" model="ir.ui.view">
+	    <field name="name">student.admission.line.form</field>
+	    <field name="model">student.admission.line</field>
+	    <field name="inherit_id" ref="aos_sekolah.view_student_admission_line_form"/>
+	    <field name="arch" type="xml">
+	        <xpath expr="//page[@name='family_information']" position="after">
+	        	<page string="Student Fees">
+		            <field name="fee_line" nolabel="1" colspan="4">
+	                    <tree string="Student Fees" editable="bottom">
+	                        <field name="name"/>
+			                <field name="partner_id" invisible="1"/>
+			                <field name="date"/>
+			                <field name="fee_id"/>
+			                <field name="amount_total"/>
+			                <field name="state"/>
+	                    </tree>
+	                </field>
+                </page>
+	        </xpath>
+	    </field>
+	</record> -->
+</odoo>

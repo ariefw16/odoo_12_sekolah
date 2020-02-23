@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <record id="print_account_voucher_view_std" model="ir.ui.view">
+            <field name="name">Down Payment Students</field>
+            <field name="model">print.advance.voucher</field>
+            <field name="arch" type="xml">
+               <form>
+                   <sheet>
+                       <group>
+                           <field name="journal_ids" widget="many2many_tags" />
+                           <group>
+                               <field name="from_date" />
+                               <field name="to_date" />
+                            </group>
+                       </group>
+                    </sheet>
+                   <footer>
+                        <button string="Print" name="action_print" type="object" class="btn-primary"/>
+                        <button string="Discard" class="btn-default" special="cancel"/>
+                   </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_advance_account_voucher_std" model="ir.actions.act_window">
+            <field name="name">Down Payment</field>
+            <field name="res_model">print.advance.voucher</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="print_account_voucher_view_std"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Down Payment" id="menu_advance_account_voucher_std" 
+        		action="action_advance_account_voucher_std"
+                parent="menu_laporan_form"
+                groups="group_school_invoice,group_school_payment" sequence="10"/>
+
+    </data>
+</odoo>
+
+
+
